@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 void main() {
-  runApp(const GooseHawk());
+  runApp(GooseHawk());
 }
 
 class GooseHawk extends StatelessWidget {
@@ -12,100 +13,99 @@ class GooseHawk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AppState(),
-      child: MaterialApp(
-        title: 'GooseHawk',
-        theme: ThemeData(
-          /* TODO rework all of these, THEY SUCK!! */
-          scaffoldBackgroundColor: Colors.white,
-          colorScheme: ColorScheme.light(
-            primary: Color(0xFF0A2342),
-            onPrimary: Colors.white,
-            primaryContainer: Color.fromARGB(19, 10, 35, 66),
-            surface: Color.fromARGB(100, 10, 35, 66),
-            secondary: Color(0xFFF5771a),
-            secondaryContainer: Color.fromARGB(19, 245, 117, 26),
-          ),
-        ),
-        home: AppBar(),
-      ),
-    );
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Column(
+            children: [
+              SizedBox(
+                height: 30,
+                child: WindowTitleBarBox(
+                  child: Row(
+                    children: [
+                      FloatingActionButton(  // TODO replace with actual icon
+                        backgroundColor: Colors.transparent,
+                        // focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        hoverElevation: 0,
+                        elevation: 0,
+                        onPressed: () {}, 
+                        child: Icon(Icons.home)
+                        ), // FloatingActionButton
+                      Expanded(
+                        child: MoveWindow(),
+                      ),
+                      WindowButtons(),
+                    ],
+                  ), // Row
+                ), // WindowTitleBarBox
+              ), // SizedBox
+              Expanded(
+                child: Row(
+                  children: const [
+                    LeftSide(),
+                    RightSide(),
+                  ],
+                ), // Row
+              ), // Expanded
+            ],
+          ), // Column
+        ), //Scaffold
+      ); // MaterialApp
   }
 }
 
-class AppState extends ChangeNotifier {}
-
-/// A Home page that uses tabs at the top for navigation.
-class AppBar extends StatefulWidget {
-  const AppBar({super.key});
-
-  @override
-  State<AppBar> createState() => _AppBarState();
-}
-
-/// I'm really not sure if TabBar is the right widget to use here. Thinking we use a AppBar instead, later Erik issue
-class _AppBarState extends State<AppBar> {
-  final _pages = const [
-    Center(child: Text('Home')),
-    Center(child: Text('Spending')),
-    Center(child: Text('Budgeting')),
-    Center(child: Text('Calendar')),
-    Center(child: Text('Settings')),
-  ];
-
-  bool hover = false;
+class LeftSide extends StatelessWidget { // ok so eventually you're going to havce an expanded widget with a listView sub widget and then a container widget that is on the same level as the expanded widget with settings
+  const LeftSide({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: _pages.length,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: hover ? const Size.fromHeight(70) : 
-          const Size.fromHeight(kToolbarHeight),
-          child: SafeArea(
-            child: Material(
-              // color: Theme.of(context).colorScheme.primary,
-              child: MouseRegion(
-                onEnter:(e) => setState(() {hover = true;}),
-                onExit: (e) => setState(() {hover = false;}),
-                child: TabBar(
-                  indicatorColor: Theme.of(context).colorScheme.primary,
-                  labelColor: Theme.of(context).colorScheme.secondary,
-                  unselectedLabelColor: Theme.of( context).colorScheme.onPrimary,
-                    tabs: hover ? const [
-                      Tab(icon: Icon(Icons.home), text: 'Home'),
-                      Tab(icon: Icon(Icons.attach_money_outlined), text: 'Spending'),
-                      Tab(icon: Icon(Icons.calculate_outlined), text: 'Budgeting'),
-                      Tab(icon: Icon(Icons.calendar_month_outlined), text: 'Calendar'),
-                      Tab(icon: Icon(Icons.settings), text: 'Settings'),
-                    ] : const [
-                      Tab(icon: Icon(Icons.home)),
-                      Tab(icon: Icon(Icons.attach_money_outlined)),
-                      Tab(icon: Icon(Icons.calculate_outlined)),
-                      Tab(icon: Icon(Icons.calendar_month_outlined)),
-                      Tab(icon: Icon(Icons.settings))
-                    ],
-                  ),
-              ),
-            ),
-          ),
-        ),
-        body: const TabBarView(
-          children: [
-            HomePage(),
-            Center(child: Text('Spending')),
-            Center(child: Text('Budgeting')),
-            Center(child: Text('Calendar')),
-            Center(child: Text('Settings')),
-          ],
-        ),
-      ),
+    return SizedBox(
+      width: 200,
+      child: Container(
+        color: Colors.blueGrey, // TODO placeholder just so you can see the fucking thing
+        // child: Column(
+        //   children: [          
+        //     Text('Left Side - Navigation')
+        //     ],
+        // ),
+      )
     );
   }
 }
 
+// I guess we can do a gradient later on? Take a look at https://www.youtube.com/watch?v=bee2AHQpGK4
+class RightSide extends StatelessWidget {
+  const RightSide({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: Column(
+          children: [
+            ],
+        ), // Column
+      ) // Center
+    ); // Expanded
+  } 
+}
+
+class WindowButtons extends StatelessWidget {
+  const WindowButtons({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        MinimizeWindowButton(),
+        MaximizeWindowButton(),
+        CloseWindowButton(),
+      ],
+    );
+  }
+}
+/// ignore all this bullshit below for now it will probably get deleted anyway i have literally no idea what im doing with flutter. We're LEARNING FUCK!!
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
