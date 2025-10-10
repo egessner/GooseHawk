@@ -17,7 +17,16 @@ class GooseHawk extends StatelessWidget {
       child: MaterialApp(
         title: 'GooseHawk',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+          /* TODO rework all of these, THEY SUCK!! */
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: ColorScheme.light(
+            primary: Color(0xFF0A2342),
+            onPrimary: Colors.white,
+            primaryContainer: Color.fromARGB(19, 10, 35, 66),
+            surface: Color.fromARGB(100, 10, 35, 66),
+            secondary: Color(0xFFF5771a),
+            secondaryContainer: Color.fromARGB(19, 245, 117, 26),
+          ),
         ),
         home: AppBar(),
       ),
@@ -61,6 +70,9 @@ class _AppBarState extends State<AppBar> {
                 onEnter:(e) => setState(() {hover = true;}),
                 onExit: (e) => setState(() {hover = false;}),
                 child: TabBar(
+                  indicatorColor: Theme.of(context).colorScheme.primary,
+                  labelColor: Theme.of(context).colorScheme.secondary,
+                  unselectedLabelColor: Theme.of( context).colorScheme.onPrimary,
                     tabs: hover ? const [
                       Tab(icon: Icon(Icons.home), text: 'Home'),
                       Tab(icon: Icon(Icons.attach_money_outlined), text: 'Spending'),
@@ -140,6 +152,7 @@ class _HomePageState extends State<HomePage> {
     final accounts = (_data!['accounts'] as List<dynamic>?) ?? <dynamic>[];
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -165,4 +178,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
