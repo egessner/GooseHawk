@@ -14,36 +14,41 @@ class GooseHawk extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFF27A00)),
+          brightness: Brightness.light
+          // useMaterial3: true,
+        ),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Column(
             children: [
               SizedBox(
                 height: 30,
-                child: WindowTitleBarBox(
-                  child: Row(
-                    children: [
-                      FloatingActionButton(  // TODO replace with actual icon
-                        backgroundColor: Colors.transparent,
-                        // focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        hoverElevation: 0,
-                        elevation: 0,
-                        onPressed: () {}, 
-                        child: Icon(Icons.home)
-                        ), // FloatingActionButton
-                      Expanded(
-                        child: MoveWindow(),
-                      ),
-                      WindowButtons(),
-                    ],
-                  ), // Row
+                child: Container(
+                  // color: Theme.of(context).colorScheme.primary,
+                  child: WindowTitleBarBox(
+                    child: Row(
+                      children: [
+                        IconButton(  // TODO replace with actual icon
+                          hoverColor: Colors.transparent,
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {}, 
+                          icon: Image.asset('assets/GooseHawk_Logo_Transparent.png')
+                          ), // FloatingActionButton
+                        Expanded(
+                          child: MoveWindow(),
+                        ),
+                        WindowButtons(),
+                      ],
+                    ), // Row
+                  ),
                 ), // WindowTitleBarBox
               ), // SizedBox
               Expanded(
                 child: Row(
                   children: const [
-                    LeftSide(),
+                    LeftSide(), // TODO change left side to a NavigationDrawer!!!
                     RightSide(),
                   ],
                 ), // Row
@@ -58,19 +63,57 @@ class GooseHawk extends StatelessWidget {
 class LeftSide extends StatelessWidget { // ok so eventually you're going to havce an expanded widget with a listView sub widget and then a container widget that is on the same level as the expanded widget with settings
   const LeftSide({super.key});
 
+  final _pages = const [ // fuck dart and fucking objects fucking pricks
+    'Home',
+    'Spending',
+    'Budgeting',
+    'Calendar',
+  ];
+
+  // var selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
       child: Container(
-        color: Colors.blueGrey, // TODO placeholder just so you can see the fucking thing
-        // child: Column(
-        //   children: [          
-        //     Text('Left Side - Navigation')
-        //     ],
-        // ),
-      )
-    );
+        color: Theme.of(context).colorScheme.primaryContainer, 
+        child: Column(
+          children: [          
+            // Text('Left Side - Navigation'),
+            Expanded(
+              child: 
+                Material(
+                  child: ListView(
+                    // selectedIndex: selectedIndex
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                      for (var p in _pages)
+                        ListTile(
+                          // hoverColor: Colors.blue,
+                          leading: Icon(Icons.circle), // TODO replace with actual icons
+                          title: Text(p),
+                          onTap: () {
+                            print('clicked on $p');
+                            // Handle navigation tap
+                          },
+                          // hoverColor: Theme.of(context).colorScheme.primary,
+                        ),
+                    ]
+                  ),
+                ), // ListView
+
+              ), // Expanded
+              ListTile( 
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+                onTap: () {}
+              )
+            ],
+        ), // Column
+      ) // Container
+    ); // SizedBox
   }
 }
 
@@ -81,11 +124,14 @@ class RightSide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Center(
-        child: Column(
-          children: [
-            ],
-        ), // Column
+      child: Container(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        child: Center(
+          child: Column(
+            children: [
+              ],
+          ), // Column
+        ),
       ) // Center
     ); // Expanded
   } 
