@@ -44,6 +44,7 @@ class AppBar extends StatefulWidget {
   State<AppBar> createState() => _AppBarState();
 }
 
+/// I'm really not sure if TabBar is the right widget to use here. Thinking we use a AppBar instead, later Erik issue
 class _AppBarState extends State<AppBar> {
   final _pages = const [
     Center(child: Text('Home')),
@@ -178,3 +179,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+/**
+ * Ok so we're going to try and make this look less shitty and then we will refactor into separate files.
+ */
