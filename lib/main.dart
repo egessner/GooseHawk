@@ -13,62 +13,92 @@ class GooseHawk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return MaterialApp(
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFF27A00)),
-          brightness: Brightness.light
-          // useMaterial3: true,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Column(
-            children: [
-              SizedBox(
-                height: 30,
-                child: Container(
-                  // color: Theme.of(context).colorScheme.primary,
-                  child: WindowTitleBarBox(
-                    child: Row(
-                      children: [
-                        IconButton(  // TODO replace with actual icon
-                          hoverColor: Colors.transparent,
-                          padding: EdgeInsets.all(0),
-                          onPressed: () {}, 
-                          icon: Image.asset('assets/GooseHawk_Logo_Transparent.png')
-                          ), // FloatingActionButton
-                        Expanded(
-                          child: MoveWindow(),
+    return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFF27A00)),
+        brightness: Brightness.light,
+        // useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Column(
+          children: [
+            SizedBox(
+              height: 30,
+              child: Container(
+                // color: Theme.of(context).colorScheme.primary,
+                child: WindowTitleBarBox(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        // TODO replace with actual icon
+                        hoverColor: Colors.transparent,
+                        padding: EdgeInsets.all(0),
+                        onPressed: () {},
+                        icon: Image.asset(
+                          'assets/GooseHawk_Logo_Transparent.png',
                         ),
-                        WindowButtons(),
-                      ],
-                    ), // Row
-                  ),
-                ), // WindowTitleBarBox
-              ), // SizedBox
-              Expanded(
-                child: Row(
-                  children: const [
-                    LeftSide(), // TODO change left side to a NavigationDrawer!!!
-                    RightSide(),
-                  ],
-                ), // Row
-              ), // Expanded
-            ],
-          ), // Column
-        ), //Scaffold
-      ); // MaterialApp
+                      ), // FloatingActionButton
+                      Expanded(child: MoveWindow()),
+                      WindowButtons(),
+                    ],
+                  ), // Row
+                ),
+              ), // WindowTitleBarBox
+            ), // SizedBox
+            Expanded(
+              child: Row(
+                children: const [
+                  LeftSide(), // TODO change left side to a NavigationDrawer!!!
+                  RightSide(),
+                ],
+              ), // Row
+            ), // Expanded
+          ],
+        ), // Column
+      ), //Scaffold
+    ); // MaterialApp
   }
 }
 
-class LeftSide extends StatelessWidget { // ok so eventually you're going to havce an expanded widget with a listView sub widget and then a container widget that is on the same level as the expanded widget with settings
+const List<NavigationRailDestination> navRailDestinations = [
+  NavigationRailDestination(
+    icon: Icon(Icons.home_outlined),
+    selectedIcon: Icon(Icons.home),
+    label: Text('Home'),
+  ),
+  NavigationRailDestination(
+    icon: Icon(Icons.attach_money_outlined),
+    selectedIcon: Icon(Icons.attach_money),
+    label: Text('Spending'),
+  ),
+  NavigationRailDestination(
+    icon: Icon(Icons.calculate_outlined),
+    selectedIcon: Icon(Icons.calculate),
+    label: Text('Budgeting'),
+  ),
+  NavigationRailDestination(
+    icon: Icon(Icons.calendar_today_outlined),
+    selectedIcon: Icon(Icons.calendar_today),
+    label: Text('Calendar'),
+  ),
+  NavigationRailDestination(
+    icon: Icon(Icons.account_balance_outlined),
+    selectedIcon: Icon(Icons.account_balance),
+    label: Text('Accounts'),
+  ),
+];
+
+class LeftSide extends StatefulWidget {
   const LeftSide({super.key});
 
-  final _pages = const [ // fuck dart and fucking objects fucking pricks
-    'Home',
-    'Spending',
-    'Budgeting',
-    'Calendar',
-  ];
+  @override
+  State<LeftSide> createState() => _LeftSideState();
+}
+
+class _LeftSideState extends State<LeftSide> {
+  int _selectedIndex = 0;
+  NavigationRailLabelType labelType = NavigationRailLabelType.all;
 
   // var selectedIndex = 0;
   @override
@@ -76,43 +106,41 @@ class LeftSide extends StatelessWidget { // ok so eventually you're going to hav
     return SizedBox(
       width: 200,
       child: Container(
-        color: Theme.of(context).colorScheme.primaryContainer, 
+        color: Theme.of(context).colorScheme.primaryContainer,
         child: Column(
-          children: [          
+          children: [
             // Text('Left Side - Navigation'),
             Expanded(
-              child: 
-                Material(
-                  child: ListView(
-                    // selectedIndex: selectedIndex
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                      ),
-                      for (var p in _pages)
-                        ListTile(
-                          // hoverColor: Colors.blue,
-                          leading: Icon(Icons.circle), // TODO replace with actual icons
-                          title: Text(p),
-                          onTap: () {
-                            print('clicked on $p');
-                            // Handle navigation tap
-                          },
-                          // hoverColor: Theme.of(context).colorScheme.primary,
-                        ),
-                    ]
-                  ),
-                ), // ListView
-
-              ), // Expanded
-              ListTile( 
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-                onTap: () {}
-              )
-            ],
+              child: NavigationRail(
+                selectedIndex: _selectedIndex,
+                extended: true,
+                onDestinationSelected: (int index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                destinations: [
+                  for (var dest in navRailDestinations)
+                    NavigationRailDestination(
+                      icon: dest.icon,
+                      selectedIcon: dest.selectedIcon,
+                      label: dest.label,
+                    ),
+                ],
+              ), // NavigationRail
+            ), // Expanded
+            SizedBox(
+              width: 200,
+              child: FloatingActionButton.extended(
+                shape: ContinuousRectangleBorder(),
+                icon: Icon(Icons.settings),
+                label: Text('Settings'),
+                onPressed: () {}, // TODO make this go to settings page
+              ),
+            ),
+          ],
         ), // Column
-      ) // Container
+      ), // Container
     ); // SizedBox
   }
 }
@@ -127,14 +155,13 @@ class RightSide extends StatelessWidget {
       child: Container(
         color: Theme.of(context).colorScheme.surfaceContainer,
         child: Center(
-          child: Column(
-            children: [
+          child: Column(children: [
               ],
           ), // Column
         ),
-      ) // Center
+      ), // Center
     ); // Expanded
-  } 
+  }
 }
 
 class WindowButtons extends StatelessWidget {
@@ -151,6 +178,7 @@ class WindowButtons extends StatelessWidget {
     );
   }
 }
+
 /// ignore all this bullshit below for now it will probably get deleted anyway i have literally no idea what im doing with flutter. We're LEARNING FUCK!!
 
 class HomePage extends StatefulWidget {
@@ -183,15 +211,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (_error != null) {
-      return Scaffold(
-        body: Center(child: Text('Error loading data: $_error')),
-      );
+      return Scaffold(body: Center(child: Text('Error loading data: $_error')));
     }
 
     if (_data == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final totalSpent = _data!['totalSpentThisMonth'] as String? ?? '';
@@ -209,7 +233,10 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             Text('Total left in budget: $totalLeft'),
             const SizedBox(height: 16),
-            const Text('Accounts:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Accounts:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             ...accounts.map((a) {
               final map = a as Map<String, dynamic>;
