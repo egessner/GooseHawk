@@ -184,44 +184,44 @@ class AccountBox extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: InkWell(
-        onTap: onTap,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Accounts',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Accounts',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(8.0),
-                    itemCount: _accountData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      var _curAccount = _accountData[index];
-                      return Card(
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: _accountData.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var _curAccount = _accountData[index];
+                    return InkWell(
+                      onTap: onTap,
+                      child: Card(
                         color: Theme.of(context).colorScheme.surfaceContainer,
                         child: ListTile (
                           title: Text(_curAccount.account),
                           trailing: Text(_curAccount.amount.toString()),
                           subtitle: Text(_curAccount.accountSource),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
