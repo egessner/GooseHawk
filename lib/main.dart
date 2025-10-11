@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import './homepage.dart' as _HomePage;
 
 void main() {
   runApp(GooseHawk());
@@ -13,25 +14,24 @@ class GooseHawk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFF27A00)),
-        brightness: Brightness.light,
-        // useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Column(
-          children: [
-            SizedBox(
-              height: 30,
-              child: Container(
-                // color: Theme.of(context).colorScheme.primary,
+    return ChangeNotifierProvider(
+      create: (context) => GooseHawkChangeNotifier(),
+      child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFFF27A00)),
+          brightness: Brightness.light,
+          // useMaterial3: true,
+        ),
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Column(
+            children: [
+              SizedBox(
+                height: 30,
                 child: WindowTitleBarBox(
                   child: Row(
                     children: [
                       IconButton(
-                        // TODO replace with actual icon
                         hoverColor: Colors.transparent,
                         padding: EdgeInsets.all(0),
                         onPressed: () {},
@@ -43,49 +43,78 @@ class GooseHawk extends StatelessWidget {
                       WindowButtons(),
                     ],
                   ), // Row
-                ),
-              ), // WindowTitleBarBox
-            ), // SizedBox
-            Expanded(
-              child: Row(
-                children: const [
-                  LeftSide(), // TODO change left side to a NavigationDrawer!!!
-                  RightSide(),
-                ],
-              ), // Row
-            ), // Expanded
-          ],
-        ), // Column
-      ), //Scaffold
+                ), // WindowTitleBarBox
+              ), // SizedBox
+              Expanded(
+                child: Row(
+                  children: const [
+                    LeftSide(),
+                    RightSide(),
+                  ],
+                ), // Row
+              ), // Expanded
+            ],
+          ), // Column
+        ), //Scaffold
+      ),
     ); // MaterialApp
   }
 }
 
-const List<NavigationRailDestination> navRailDestinations = [
-  NavigationRailDestination(
+class GooseHawkChangeNotifier extends ChangeNotifier { // i dont really know how change notifier provider works yet
+  // Add your state variables and methods here
+  var currentPageIndex = 0; // HomePage
+
+  void setCurrentPageIndex(int index) {
+    currentPageIndex = index;
+    notifyListeners();
+  }
+}
+
+class GooseHawkPageDestination{
+  final Icon icon;
+  final Icon selectedIcon;
+  final Text label;
+  final Widget page;
+
+  const GooseHawkPageDestination({
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    required this.page,
+  });
+}
+
+const List<GooseHawkPageDestination> navRailDestinations = [
+  GooseHawkPageDestination(
     icon: Icon(Icons.home_outlined),
     selectedIcon: Icon(Icons.home),
     label: Text('Home'),
+    page: _HomePage.HomePage2(),
   ),
-  NavigationRailDestination(
+  GooseHawkPageDestination(
     icon: Icon(Icons.attach_money_outlined),
     selectedIcon: Icon(Icons.attach_money),
     label: Text('Spending'),
+    page: Placeholder(),
   ),
-  NavigationRailDestination(
+  GooseHawkPageDestination(
     icon: Icon(Icons.calculate_outlined),
     selectedIcon: Icon(Icons.calculate),
     label: Text('Budgeting'),
+    page: Placeholder(),
   ),
-  NavigationRailDestination(
+  GooseHawkPageDestination(
     icon: Icon(Icons.calendar_today_outlined),
     selectedIcon: Icon(Icons.calendar_today),
     label: Text('Calendar'),
+    page: Placeholder(),
   ),
-  NavigationRailDestination(
+  GooseHawkPageDestination(
     icon: Icon(Icons.account_balance_outlined),
     selectedIcon: Icon(Icons.account_balance),
     label: Text('Accounts'),
+    page: Placeholder(),
   ),
 ];
 
@@ -97,12 +126,14 @@ class LeftSide extends StatefulWidget {
 }
 
 class _LeftSideState extends State<LeftSide> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // TODO Redundent to have this set to 0?
   NavigationRailLabelType labelType = NavigationRailLabelType.all;
 
   // var selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<GooseHawkChangeNotifier>();
+    _selectedIndex = appState.currentPageIndex;
     return SizedBox(
       width: 200,
       child: Container(
@@ -117,6 +148,7 @@ class _LeftSideState extends State<LeftSide> {
                 onDestinationSelected: (int index) {
                   setState(() {
                     _selectedIndex = index;
+                    appState.setCurrentPageIndex(index);
                   });
                 },
                 destinations: [
@@ -131,8 +163,9 @@ class _LeftSideState extends State<LeftSide> {
             ), // Expanded
             SizedBox(
               width: 200,
-              child: FloatingActionButton.extended(
+              child: FloatingActionButton.extended( // TODO change this to an inkwell its better
                 shape: ContinuousRectangleBorder(),
+                
                 icon: Icon(Icons.settings),
                 label: Text('Settings'),
                 onPressed: () {}, // TODO make this go to settings page
@@ -146,20 +179,20 @@ class _LeftSideState extends State<LeftSide> {
 }
 
 // I guess we can do a gradient later on? Take a look at https://www.youtube.com/watch?v=bee2AHQpGK4
-class RightSide extends StatelessWidget {
+class RightSide extends StatefulWidget {
   const RightSide({super.key});
 
   @override
+  State<RightSide> createState() => _RightSideState();
+}
+
+class _RightSideState extends State<RightSide> {
+  @override
   Widget build(BuildContext context) {
+    var appState = context.watch<GooseHawkChangeNotifier>();
+    var currentPage = navRailDestinations[appState.currentPageIndex].page;
     return Expanded(
-      child: Container(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        child: Center(
-          child: Column(children: [
-              ],
-          ), // Column
-        ),
-      ), // Center
+      child: currentPage, // Center
     ); // Expanded
   }
 }
