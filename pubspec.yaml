@@ -72,7 +72,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/sampleData.json
+    - lib/sampledata.dart
     - assets/GooseHawk_Logo.png
     - assets\GooseHawk_Logo_Transparent.png
 

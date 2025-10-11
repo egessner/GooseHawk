@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:provider/provider.dart';
 import './main.dart';
+import './sampledata.dart' as sampledata;
 
 class HomePage2 extends StatefulWidget {
   const HomePage2({super.key});
@@ -177,6 +180,7 @@ class AccountBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _accountData = sampledata.sampleAccountData;
     return SizedBox(
       width: width,
       height: height,
@@ -199,16 +203,23 @@ class AccountBox extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
-                // ListView(
-                //   children: [
-                //     // TODO erik, listen buddy, make this a ListView.builder, I know we don't get it yet but we will fella
-                //     ListTile(
-                //       title: Text('Checking'),
-                //       subtitle: Text('US Bank'),
-                //       trailing: Text('\$1,234.56'),
-                //     ),
-                //   ],
-                // ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(8.0),
+                    itemCount: _accountData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var _curAccount = _accountData[index];
+                      return Card(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        child: ListTile (
+                          title: Text(_curAccount.account),
+                          trailing: Text(_curAccount.amount.toString()),
+                          subtitle: Text(_curAccount.accountSource),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
