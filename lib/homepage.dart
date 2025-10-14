@@ -18,8 +18,9 @@ class _HomePage2State extends State<HomePage2> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<GooseHawkChangeNotifier>();
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: colorScheme.primaryContainer,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final balanceboxWidth =
@@ -43,13 +44,14 @@ class _HomePage2State extends State<HomePage2> {
                 margin: EdgeInsets.all(8),
                 shape: ContinuousRectangleBorder(),
                 borderOnForeground: true,
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: colorScheme.primaryContainer,
                 child: Text(
                   'Good morning,',
                   style: TextStyle(
                     fontSize: 24,
                     // fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w500
                   ),
                 ),
               ),
@@ -95,7 +97,7 @@ class _HomePage2State extends State<HomePage2> {
                     onTap: () {
                       appState.setCurrentPageIndex(4);
                     },
-                  )
+                  ),
                 ],
               ),
             ],
@@ -124,6 +126,7 @@ class BalanceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: width,
       height: height,
@@ -142,18 +145,18 @@ class BalanceBox extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontSize: 18,
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 SizedBox(height: 8),
                 Text(
                   amount,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context)
-                        .colorScheme
+                    color: colorScheme
                         .onPrimaryContainer, // TODO this will be green if under budget red if over
                   ),
                 ),
@@ -181,6 +184,7 @@ class AccountBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _accountData = sampledata.sampleAccountData;
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: width,
       height: height,
@@ -198,7 +202,7 @@ class AccountBox extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: colorScheme.onPrimaryContainer,
                 ),
               ),
               Expanded(
@@ -210,11 +214,35 @@ class AccountBox extends StatelessWidget {
                     return InkWell(
                       onTap: onTap,
                       child: Card(
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                        child: ListTile (
-                          title: Text(_curAccount.account),
-                          trailing: Text(_curAccount.amount.toString()),
-                          subtitle: Text(_curAccount.accountSource),
+                        color: colorScheme.surfaceContainer,
+                        child: ListTile(
+                          // Account name
+                          title: Text(
+                            _curAccount.account,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          // Amount in account
+                          trailing: Text(
+                            _curAccount.amount
+                                .toString(), // no $$ rn but we will format the data elsewhere
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          // Account sourcee
+                          subtitle: Text(
+                            _curAccount.accountSource,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
                     );
