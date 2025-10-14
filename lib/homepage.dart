@@ -34,7 +34,7 @@ class _HomePage2State extends State<HomePage2> {
           final accountsboxWidth =
               constraints.maxWidth * .9; // 90% of available width
           final accountsboxHeight =
-              constraints.maxHeight * .55; // 40% of available
+              constraints.maxHeight * .5; // 40% of available
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -51,7 +51,7 @@ class _HomePage2State extends State<HomePage2> {
                     fontSize: 24,
                     // fontWeight: FontWeight.bold,
                     color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w500
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -98,6 +98,7 @@ class _HomePage2State extends State<HomePage2> {
                       appState.setCurrentPageIndex(4);
                     },
                   ),
+                  ReloadBar(width: accountsboxWidth),
                 ],
               ),
             ],
@@ -257,3 +258,54 @@ class AccountBox extends StatelessWidget {
   }
 }
 
+class ReloadBar extends StatefulWidget {
+  final double width;
+
+  const ReloadBar({super.key, required this.width});
+
+  @override
+  State<ReloadBar> createState() => _ReloadBarState();
+}
+
+class _ReloadBarState extends State<ReloadBar> {
+  bool isLoading = false;
+  triggerReload() {
+    setState(() {
+    isLoading = true;
+    // trigger backend functionality that is to come
+    });
+  }
+
+  killReloadAnimation() {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 20,
+      width: widget.width,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: isLoading? LinearProgressIndicator() : SizedBox.shrink()
+              ),
+            SizedBox(width: 8),
+            InkWell(
+              child: Icon(Icons.refresh_outlined, size: 20),
+              onTap: () {
+                isLoading? killReloadAnimation() : triggerReload();
+              }
+              ),
+            SizedBox(width: 8),
+            Text('Last Refreshed in your moms pants')
+          ]
+        ),
+      ),
+    );
+  }
+}
