@@ -31,10 +31,4 @@ List<SampleAccountData> sampleAccountData = [
     accountSource: 'American Express',
     amount: -2037.43
   ),
-  SampleAccountData(
-    account: 'Platinum Card',
-    accountType: 'Credit',
-    accountSource: 'American Express',
-    amount: -2037.43
-  ),
 ];

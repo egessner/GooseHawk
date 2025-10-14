@@ -184,16 +184,10 @@ class AccountBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _accountData = sampledata.sampleAccountData;
-    // determine height of accounts box if # of accounts is < 4
-    var actualHeight = height;
-    if (_accountData.length < 4) {
-      var accountBoxSizeConstraint = (4-_accountData.length) * 72;
-      actualHeight = height - accountBoxSizeConstraint;
-    }
     final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: width,
-      height: actualHeight,
+      height: height,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
