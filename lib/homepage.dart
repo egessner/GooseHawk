@@ -34,7 +34,7 @@ class _HomePage2State extends State<HomePage2> {
           final accountsboxWidth =
               constraints.maxWidth * .9; // 90% of available width
           final accountsboxHeight =
-              constraints.maxHeight * .5; // 40% of available
+              constraints.maxHeight * .55; // 40% of available
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -257,76 +257,3 @@ class AccountBox extends StatelessWidget {
   }
 }
 
-// fuck i hate all of it
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-// just about all of this deserves to die
-class _HomePageState extends State<HomePage> {
-  Map<String, dynamic>? _data;
-  String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSampleData();
-  }
-
-  Future<void> _loadSampleData() async {
-    try {
-      final text = await rootBundle.loadString('lib/sampleData.json');
-      final decoded = jsonDecode(text) as Map<String, dynamic>;
-      setState(() => _data = decoded);
-    } catch (e) {
-      setState(() => _error = e.toString());
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_error != null) {
-      return Scaffold(body: Center(child: Text('Error loading data: $_error')));
-    }
-
-    if (_data == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    final totalSpent = _data!['totalSpentThisMonth'] as String? ?? '';
-    final totalLeft = _data!['totalLeftInBudget'] as String? ?? '';
-    final accounts = (_data!['accounts'] as List<dynamic>?) ?? <dynamic>[];
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Total spent this month: $totalSpent'),
-            const SizedBox(height: 8),
-            Text('Total left in budget: $totalLeft'),
-            const SizedBox(height: 16),
-            const Text(
-              'Accounts:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            ...accounts.map((a) {
-              final map = a as Map<String, dynamic>;
-              return ListTile(
-                title: Text(map['name'] as String? ?? ''),
-                subtitle: Text(map['type'] as String? ?? ''),
-                trailing: Text(map['balance'] as String? ?? ''),
-              );
-            }),
-          ],
-        ),
-      ),
-    );
-  }
-}
