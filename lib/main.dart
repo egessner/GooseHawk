@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import './homepage.dart' as _HomePage;
 import './colorpallets.dart' as colorpallets;
+import './devpage.dart' as _DevPage;
 
 void main() {
   runApp(GooseHawk());
@@ -113,6 +114,12 @@ const List<GooseHawkPageDestination> navRailDestinations = [
     icon: Icon(Icons.account_balance_outlined),
     selectedIcon: Icon(Icons.account_balance),
     label: Text('Accounts'),
+    page: Placeholder(),
+  ),
+  GooseHawkPageDestination(
+    icon: Icon(Icons.plumbing_outlined),
+    selectedIcon: Icon(Icons.plumbing),
+    label: Text('DevPage'),
     page: Placeholder(),
   ),
 ];
