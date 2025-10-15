@@ -120,7 +120,7 @@ const List<GooseHawkPageDestination> navRailDestinations = [
     icon: Icon(Icons.plumbing_outlined),
     selectedIcon: Icon(Icons.plumbing),
     label: Text('DevPage'),
-    page: Placeholder(),
+    page: _DevPage.Devpage(),
   ),
 ];
 
