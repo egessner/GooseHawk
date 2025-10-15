@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import './main.dart';
+import './Plaid Sandbox/plaidcreateitem.dart' as createItem;
+import './Plaid Sandbox/transactionssync.dart' as transSync;
 
 /**
  * Use this page to make really shitty looking stuff thats just for testing
@@ -14,11 +15,14 @@ class Devpage extends StatefulWidget {
 class _DevpageState extends State<Devpage> {
   late final TextEditingController _clientID;
   late final TextEditingController _secretKey;
+  late final TextEditingController _publicKey;
 
+  @override
   void initState() {
     super.initState();
     _clientID = TextEditingController();
     _secretKey = TextEditingController();
+    _publicKey = TextEditingController();
   }
 
   var rawText = '';
@@ -33,6 +37,12 @@ class _DevpageState extends State<Devpage> {
   void updateBonusText(newText) {
     setState(() {
       bonusText = newText;
+    });
+  }
+
+  void updatePublicKeyText(String newText) {
+    setState(() {
+      _publicKey.text = newText;
     });
   }
 
@@ -67,20 +77,37 @@ class _DevpageState extends State<Devpage> {
                   ),
                   SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // probably run some script
                       // public token is returned
+                      var _response = await createItem.createItemCall(
+                        _clientID.text,
+                        _secretKey.text,
+                      );
+                      updateRawText(_response);
+                      updatePublicKeyText(createItem.getPublicToken(_response));
                     },
                     child: Text('Create Item'),
                   ),
                   SizedBox(height: 8),
+                  TextField(
+                    controller: _publicKey,
+                    decoration: const InputDecoration(
+                      labelText: 'Public key',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: () {
-                      // 4 import things here
-                      // has_more tells us if we need to update DBs
-                      // next curser points us at our latest transaction so we only pull new ones
-                      // Accounts gives us all of our account data for an account
-                      // added gives us transactions
+                    onPressed: () async {
+                      var _response = await transSync.transactionsSync(
+                        _publicKey.text,
+                        _clientID.text,
+                        _secretKey.text,
+                        'CAESJTZ6RzhsUHdnaktDNW9QbzVlcThyaXZHWlcxN2ttZXRWM1ZRbVgiCwjhl7zHBhDIq7krKgsI4Ze8xwYQyKu5Kw==',
+                        10,
+                      );
+                        updateRawText(_response);
                     },
                     child: Text('Transactions sync'),
                   ),
@@ -94,23 +121,15 @@ class _DevpageState extends State<Devpage> {
                   // Raw text
                   Text('Raw Text'),
                   SizedBox(
-                    height: 300, 
-                    child: 
-                      SingleChildScrollView(
-                        child: 
-                          Text(rawText),
-                      )
-                    ),
-                    SizedBox(height: 8),
-                    Text('Bonus Text'),
+                    height: 300,
+                    child: SingleChildScrollView(child: Text(rawText)),
+                  ),
+                  SizedBox(height: 8),
+                  Text('Bonus Text'),
                   SizedBox(
-                    height: 300, 
-                    child: 
-                      SingleChildScrollView(
-                        child: 
-                          Text(bonusText),
-                      )
-                    ),
+                    height: 300,
+                    child: SingleChildScrollView(child: Text(bonusText)),
+                  ),
                 ],
               ),
             ),
